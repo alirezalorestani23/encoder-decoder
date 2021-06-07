@@ -7,6 +7,7 @@ import numpy as np
 
 
 def encode_frames(i, frame):
+    
     q_mtx = np.array([[16, 11, 10, 16, 24, 40, 51, 61],
                       [12, 12, 14, 19, 26, 58, 60, 55],
                       [14, 13, 16, 24, 40, 57, 69, 56],
@@ -16,15 +17,16 @@ def encode_frames(i, frame):
                       [49, 64, 78, 87, 103, 121, 120, 101],
                       [72, 92, 95, 98, 112, 100, 103, 99]], np.int32)
     c, r = np.shape(frame)
-    for k in range(0, c, 8):
-        for j in range(0, r, 8):
-            # if k < c - 8 and j < r - 8:
-                imf = np.float32(frame[j:j + 8, k:k + 8]) / 255.0
-                dct = cv2.dct(imf)
-                imgcv1 = np.uint8(dct * 255.0)
-                frame[j:j + 8, k:k + 8] = imgcv1/q_mtx
-            # else:
-            #     print(frame)
+    a = np.zeros(shape=(c,r), dtype=np.int32)
+    print(frame)
+    print("------------------------------------------------------------\n\n\n\n")
+    for k in range(0, c-8, 8):
+        for j in range(0, r-8, 8):
+            imf = np.float32(frame[ k:k + 8, j:j + 8]) / 255.0
+            dct = cv2.dct(imf)
+            imgcv1 = np.uint8(dct * 255.0)
+            a[k:k + 8, j:j + 8] = imgcv1/q_mtx
+    print(a)
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
@@ -36,6 +38,7 @@ if __name__ == '__main__':
             break
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         encode_frames(i, frame)
+        
         # cv2.imwrite('kang' + str(i) + '.jpg', frame)
         i += 1
 
